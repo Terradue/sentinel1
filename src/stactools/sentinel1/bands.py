@@ -17,7 +17,7 @@ def image_asset_from_href(
     # resolution_to_shape: Dict[int, Tuple[int, int]],
     # proj_bbox: List[float],
     media_type: Optional[str] = None,
-    slc_swaths: Optional[bool] = False
+    slc_swaths: Optional[bool] = False,
 ) -> Tuple[str, pystac.Asset]:
     logger.debug(f"Creating asset for image {asset_href}")
 
@@ -57,7 +57,7 @@ def image_asset_from_href(
             swath = asset_parts[1].upper()
             if swath in SENTINEL_SLC_SWATHS:
                 band_id = f"{swath.lower()}-{band_id}"
-        
+
         return (band_id, asset)
 
     else:
