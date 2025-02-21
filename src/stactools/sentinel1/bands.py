@@ -6,6 +6,7 @@ import pystac
 from pystac.extensions.eo import EOExtension
 
 from stactools.sentinel1.constants import SENTINEL_POLARIZATIONS
+from stactools.sentinel1.slc.constants import SENTINEL_SLC_SWATHS
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +17,7 @@ def image_asset_from_href(
     # resolution_to_shape: Dict[int, Tuple[int, int]],
     # proj_bbox: List[float],
     media_type: Optional[str] = None,
+    slc_swaths: Optional[bool] = False,
 ) -> Tuple[str, pystac.Asset]:
     logger.debug(f"Creating asset for image {asset_href}")
 
@@ -29,10 +31,11 @@ def image_asset_from_href(
             raise Exception(f"Must supply a media type for asset : {asset_href}")
 
     # Handle band image
-    if len(os.path.basename(asset_href).split(".")[0].split("-")) == 2:
-        band_id = os.path.basename(asset_href).split(".")[0].split("-")[-1]
+    asset_parts = os.path.basename(asset_href).split(".")[0].split("-")
+    if len(asset_parts) == 2:
+        band_id = asset_parts[-1]
     else:
-        band_id = os.path.basename(asset_href).split(".")[0].split("-")[3]
+        band_id = asset_parts[3]
 
     if band_id is not None:
         band = SENTINEL_POLARIZATIONS[band_id]
@@ -49,6 +52,11 @@ def image_asset_from_href(
 
         asset_eo = EOExtension.ext(asset)
         asset_eo.bands = [SENTINEL_POLARIZATIONS[band_id]]
+
+        if slc_swaths:
+            swath = asset_parts[1].upper()
+            if swath in SENTINEL_SLC_SWATHS:
+                band_id = f"{swath.lower()}-{band_id}"
 
         return (band_id, asset)
 

@@ -232,6 +232,7 @@ def create_item(
                 os.path.join(granule_href, image_path),
                 item,
                 media_type=images_media_type,
+                slc_swaths=True,
             )
             for image_path in product_metadata.image_paths
         ]
