@@ -80,7 +80,7 @@ def create_collection(json_path: str) -> pystac.Collection:
 
     # Item Asset Extension
     assets = ItemAssetsExtension.ext(collection, add_if_missing=True)
-    assets.item_assets = c.SENTINEL_SLC_ASSETS
+    assets.item_assets = c.SENTINEL_SLC_ASSETS  # type: ignore
 
     return collection
 
